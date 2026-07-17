@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>FreePokerHub — Play Free Texas Hold'em Online</title>
+<meta name="description" content="Play free Texas Hold'em poker in your browser against 4 AI opponents. Full poker rules, realistic chips, smooth animations and a classic casino table. No download, no sign-up.">
+<meta name="keywords" content="texas holdem, free poker, online poker, poker game, play poker online, holdem poker, casino card game, browser poker, free card game">
+<meta name="author" content="FreePokerHub">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0b6b3a">
+<link rel="canonical" href="https://freepokerhub.com/">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="apple-touch-icon" href="images/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FreePokerHub">
+<meta property="og:url" content="https://freepokerhub.com/">
+<meta property="og:title" content="FreePokerHub — Free Online Texas Hold'em">
+<meta property="og:description" content="Play free Texas Hold'em poker against 4 AI opponents. Full rules, casino table, smooth animations. No download, no sign-up.">
+<meta property="og:image" content="https://freepokerhub.com/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="FreePokerHub online Texas Hold'em poker table">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FreePokerHub — Free Online Texas Hold'em">
+<meta name="twitter:description" content="Play free Texas Hold'em poker against 4 AI opponents right in your browser.">
+<meta name="twitter:image" content="https://freepokerhub.com/images/og-cover.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoGame","name":"FreePokerHub","url":"https://freepokerhub.com/","image":"https://freepokerhub.com/images/og-cover.png","genre":["Card Game","Casino","Poker"],"gamePlatform":"Web Browser","applicationCategory":"Game","operatingSystem":"Any","description":"Free browser-based Texas Hold'em poker against four AI opponents with full poker rules and animations.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"}}
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="casino-bg"></div>
+<div class="vignette"></div>
+
+<!-- ROTATE TO LANDSCAPE (mobile portrait only) -->
+<div id="rotate-notice" aria-hidden="true">
+  <div class="rotate-inner">
+    <div class="rotate-phone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="7" y="2" width="10" height="20" rx="2"/>
+        <line x1="11" y1="18" x2="13" y2="18"/>
+        <path class="rotate-arrow" d="M20.5 8.5a9 9 0 0 1 0 7"/>
+        <path class="rotate-arrow" d="M3.5 15.5a9 9 0 0 1 0-7"/>
+      </svg>
+    </div>
+    <h2>Rotate your device</h2>
+    <p>FreePokerHub plays in landscape. Turn your phone sideways to take your seat.</p>
+  </div>
+</div>
+
+<!-- SEO CONTENT: crawlable text for search engines, visually hidden -->
+<header class="seo-intro">
+  <h1>Play Free Texas Hold'em Poker Online</h1>
+  <p>FreePokerHub is a free online Texas Hold'em poker game you play right in your browser against four AI opponents — no download and no sign-up required. Choose your difficulty, take a seat at a classic casino table with realistic chips and smooth animations, and play full No-Limit Hold'em with rising blinds.</p>
+  <h2>How to Play Texas Hold'em</h2>
+  <p>Each player is dealt two private hole cards. Five community cards are revealed face-up across three rounds — the flop, the turn and the river. You make your best five-card hand from any combination of your two hole cards and the five shared cards. Betting takes place over four rounds (pre-flop, flop, turn and river), and on your turn you can fold, check or call, or raise. The forced small and big blinds start each pot and increase over time. The last player standing, or the best hand at showdown, wins the pot.</p>
+  <h2>Poker Hand Rankings, Strongest First</h2>
+  <p>Royal Flush, Straight Flush, Four of a Kind, Full House, Flush, Straight, Three of a Kind, Two Pair, One Pair, and High Card.</p>
+</header>
+
+<div id="app">
+
+  <!-- NAME ENTRY -->
+  <div id="login">
+    <div class="login-card">
+      <div class="login-visual">
+        <img src="images/rules.jpg" alt="Rules">
+      </div>
+      <div class="login-content">
+        <div class="suit-row">♠ ♥ ♦ ♣</div>
+        <h2>FreePokerHub</h2>
+        <p>Enter your name to take a seat</p>
+        <div class="field">
+          <input id="in-name" type="text" placeholder="Your name" autocomplete="name" maxlength="14">
+        </div>
+        <div class="diff-label">Difficulty</div>
+        <div class="diff-row">
+          <button class="diff-opt" data-diff="easy">Easy</button>
+          <button class="diff-opt sel" data-diff="medium">Medium</button>
+          <button class="diff-opt" data-diff="hard">Hard</button>
+          <button class="diff-opt" data-diff="expert">Expert</button>
+        </div>
+        <button class="primary" id="btn-signin">Play</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="game">
+    <div class="topbar">
+      <div class="brand">♠ Free<b>Poker</b>Hub ♥</div>
+      <div class="topbar-right">
+        <button id="btn-logout">New Game</button>
+        <div class="menu-wrap">
+          <button class="icon-btn" id="btn-menu" title="Menu" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+          <div class="menu-dropdown" id="appMenu" role="menu">
+            <div class="menu-user">
+              <div class="avatar" id="ua">P</div>
+              <div>
+                <div id="uname">Player</div>
+                <div class="you-tag">You</div>
+              </div>
+            </div>
+            <div class="menu-blinds" id="blindInfo">Blinds $10/$20 · Lvl 1</div>
+            <button class="menu-item" id="btn-help" role="menuitem">
+              <span class="mi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+              <span class="mi-label">How to Play</span>
+            </button>
+            <button class="menu-item" id="btn-sound" role="menuitem">
+              <span class="mi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg></span>
+              <span class="mi-label">Sound on</span>
+            </button>
+            <button class="menu-item" id="btn-stats" role="menuitem">
+              <span class="mi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="12"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="9"/></svg></span>
+              <span class="mi-label">Statistics</span>
+            </button>
+            <button class="menu-item" id="btn-fullscreen" role="menuitem">
+              <span class="mi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></span>
+              <span class="mi-label">Enter fullscreen</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="felt">
+        <div class="logo-center">
+          <div class="l1">FREEPOKER</div>
+          <div class="l2">HUB</div>
+        </div>
+        <div class="stage-tag" id="stageTag"></div>
+        <div class="board" id="board"></div>
+        <div class="pot-display" id="pot">Pot: <small>0</small></div>
+        <div class="dealer-btn" id="dbtn">D</div>
+      </div>
+      <div id="seats"></div>
+    </div>
+
+    <div class="controls">
+      <div class="hand-info" id="handInfo"></div>
+      <div class="msg" id="msg">Welcome! Click "New Hand" to deal.</div>
+      <div class="btnrow" id="actionBtns">
+        <button class="act fold" id="a-fold">Fold</button>
+        <button class="act call" id="a-call">Check</button>
+        <button class="act raise" id="a-raise">Raise</button>
+      </div>
+      <div class="raiserow" id="raiseRow">
+        <input type="range" id="raiseSlider">
+        <span class="raiseval" id="raiseVal">0</span>
+      </div>
+      <div class="quick" id="quickRow">
+        <button data-f="min">Min</button>
+        <button data-f="half">½ Pot</button>
+        <button data-f="pot">Pot</button>
+        <button data-f="allin">All-In</button>
+      </div>
+      <button class="newhand" id="btn-newhand">Deal New Hand</button>
+    </div>
+  </div>
+
+  <!-- HOW TO PLAY -->
+  <div id="howto" class="modal-overlay">
+    <div class="modal-card wide howto-card">
+      <button class="x-close" id="help-close">×</button>
+      <h3>How to Play Texas Hold'em</h3>
+      <div class="howto-cols">
+      <div class="howto-left"><img src="images/howto-poker.svg" alt="Poker table with a pair of aces and chips"></div>
+      <div class="howto-body">
+        <p>Each player gets <b>2 private hole cards</b>. Five <b>community cards</b> are dealt face-up in the middle (the flop, turn and river). You make your best <b>5-card hand</b> from any combination of your 2 cards and the 5 shared cards.</p>
+        <p>Betting happens in four rounds — pre-flop, flop, turn and river. On your turn you can <b>Fold</b>, <b>Check/Call</b>, or <b>Raise</b>. The <b>small</b> and <b>big blinds</b> are forced bets that start the pot, and they rise over time. Last player standing — or the best hand at showdown — wins the pot.</p>
+        <h4>Hand Rankings <span>(strongest first)</span></h4>
+        <ol class="rankings">
+          <li><span class="rk">Royal Flush</span><span class="ex">A♠ K♠ Q♠ J♠ 10♠</span></li>
+          <li><span class="rk">Straight Flush</span><span class="ex">9♥ 8♥ 7♥ 6♥ 5♥</span></li>
+          <li><span class="rk">Four of a Kind</span><span class="ex">Q♠ Q♥ Q♦ Q♣ 4♠</span></li>
+          <li><span class="rk">Full House</span><span class="ex">K♠ K♥ K♦ 7♣ 7♠</span></li>
+          <li><span class="rk">Flush</span><span class="ex">A♦ J♦ 8♦ 5♦ 2♦</span></li>
+          <li><span class="rk">Straight</span><span class="ex">9♣ 8♠ 7♦ 6♥ 5♣</span></li>
+          <li><span class="rk">Three of a Kind</span><span class="ex">5♠ 5♥ 5♦ K♣ 2♠</span></li>
+          <li><span class="rk">Two Pair</span><span class="ex">A♠ A♦ 9♣ 9♠ 4♥</span></li>
+          <li><span class="rk">One Pair</span><span class="ex">10♠ 10♦ K♥ 6♣ 3♠</span></li>
+          <li><span class="rk">High Card</span><span class="ex">A♠ J♦ 8♣ 5♥ 2♠</span></li>
+        </ol>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div id="statsModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="x-close" id="stats-close">×</button>
+      <h3>Session Statistics</h3>
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-val" id="st-played">0</div><div class="stat-key">Hands Played</div></div>
+        <div class="stat"><div class="stat-val" id="st-won">0</div><div class="stat-key">Hands Won</div></div>
+        <div class="stat"><div class="stat-val" id="st-winrate">0%</div><div class="stat-key">Win Rate</div></div>
+        <div class="stat"><div class="stat-val" id="st-biggest">$0</div><div class="stat-key">Biggest Pot</div></div>
+        <div class="stat wide2"><div class="stat-val" id="st-net">+$0</div><div class="stat-key">Net Profit / Loss</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAND RESULT -->
+  <div id="resultModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="result-trophy">🏆</div>
+      <h3>Hand Over</h3>
+      <div id="result-body"></div>
+      <div class="modal-btns">
+        <button class="modal-ok" id="result-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW GAME CONFIRM -->
+  <div id="confirm" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon">⚠️</div>
+      <h3>Start a new game?</h3>
+      <p>Your current game will not be saved. All chips and progress will be reset.</p>
+      <div class="modal-btns">
+        <button class="modal-cancel" id="cf-cancel">Cancel</button>
+        <button class="modal-ok" id="cf-ok">New Game</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bg" cx="0.5" cy="0.35" r="0.75"><stop offset="0" stop-color="#155e39"/><stop offset="55%" stop-color="#0a3a22"/><stop offset="100%" stop-color="#03150b"/></radialGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e8e8e8"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <ellipse cx="600" cy="470" rx="520" ry="150" fill="#0d5231" stroke="#d4af37" stroke-width="6" opacity="0.9"/>
+  <g transform="translate(430,360) rotate(-12)">
+    <rect width="130" height="185" rx="14" fill="url(#card)"/>
+    <text x="18" y="46" font-family="Georgia, serif" font-size="42" font-weight="bold" fill="#c0392b">A</text>
+    <text x="65" y="118" font-family="Georgia, serif" font-size="70" fill="#c0392b" text-anchor="middle">♥</text>
+  </g>
+  <g transform="translate(600,345) rotate(6)">
+    <rect width="130" height="185" rx="14" fill="url(#card)"/>
+    <text x="18" y="46" font-family="Georgia, serif" font-size="42" font-weight="bold" fill="#1a1a1a">K</text>
+    <text x="65" y="118" font-family="Georgia, serif" font-size="70" fill="#1a1a1a" text-anchor="middle">♠</text>
+  </g>
+  <circle cx="360" cy="470" r="34" fill="#c0392b" stroke="#fff" stroke-width="5"/>
+  <circle cx="850" cy="455" r="34" fill="#2471a3" stroke="#fff" stroke-width="5"/>
+  <circle cx="900" cy="495" r="34" fill="#b7950b" stroke="#fff" stroke-width="5"/>
+  <text x="600" y="150" font-family="Georgia, serif" font-size="88" font-weight="bold" fill="#f0d878" text-anchor="middle">FreePokerHub</text>
+  <text x="600" y="215" font-family="Arial, sans-serif" font-size="34" fill="#cfe6d8" text-anchor="middle" letter-spacing="2">Free Online Texas Hold'em — No Download</text>
+</svg>
