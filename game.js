@@ -753,6 +753,17 @@ function exitFullscreen(){
   if(isFullscreen() && fn){ try{ fn.call(document); }catch(e){} }
 }
 function toggleFullscreen(){ isFullscreen() ? exitFullscreen() : enterFullscreen(); }
+/* On mobile, go fullscreen (hides the browser title/URL bar) on the user's
+   first tap anywhere — the earliest moment a browser permits it. */
+if(isTouchDevice){
+  const kickFullscreen = ()=>{
+    if(!isFullscreen()) enterFullscreen();
+    document.removeEventListener('pointerdown', kickFullscreen);
+    document.removeEventListener('touchend', kickFullscreen);
+  };
+  document.addEventListener('pointerdown', kickFullscreen);
+  document.addEventListener('touchend', kickFullscreen);
+}
 function lockLandscape(){
   try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); }catch(e){}
 }

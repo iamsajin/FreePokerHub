@@ -1,0 +1,14 @@
+{
+  "name": "FreePokerHub — Free Texas Hold'em",
+  "short_name": "FreePokerHub",
+  "description": "Play free Texas Hold'em poker against 4 AI opponents right in your browser.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#051a0e",
+  "theme_color": "#0b6b3a",
+  "icons": [
+    { "src": "images/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
