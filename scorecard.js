@@ -300,7 +300,6 @@
       inp.type = "number"; inp.inputMode = "numeric"; inp.min = "0";
       inp.value = def;
       inp.setAttribute("data-pid", p.id);
-      inp.style.textAlign = "right";
       var sub = el("div", "plr-sub", fmt(coinsToValue(def)));
       inp.addEventListener("input", function () {
         var v = parseFloat(inp.value) || 0;
