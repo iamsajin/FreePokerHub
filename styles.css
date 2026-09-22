@@ -2144,6 +2144,12 @@ body.is-ios #sc-apple-btn { display: flex; }
   max-width: 94vw;
   text-align: center;
 }
+.scorecard-title {
+  color: var(--gold2);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
 .scorecard-desc {
   color: #a7c0b2;
   font-size: 14px;
