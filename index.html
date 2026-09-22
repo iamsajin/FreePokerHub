@@ -99,12 +99,14 @@
         <button class="primary" id="btn-signin">Play</button>
       </div>
     </div>
-    <div class="scorecard-cta">
-      <h3 class="scorecard-title">Playing in person?</h3>
-      <p class="scorecard-desc">Track buy-ins and know exactly who owes who by the end of the night.</p>
-      <a class="scorecard-link" href="scorecard.html">Keep Score</a>
-    </div>
-  </div>
+    <div class="login-card">
+        <div class="scorecard-cta">
+          <h3 class="scorecard-title">Playing in person?</h3>
+          <p class="scorecard-desc">Track buy-ins and know exactly who owes who by the end of the night.</p>
+          <a class="scorecard-link" href="scorecard.html">Keep Score</a>
+        </div>
+      </div>
+    </div>  
 
   <!-- GAME -->
   <div id="game">
@@ -125,6 +127,10 @@
               </div>
             </div>
             <div class="menu-blinds" id="blindInfo">Blinds $10/$20 · Lvl 1</div>
+            <button class="menu-item" id="btn-home" role="menuitem">
+              <span class="mi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></span>
+              <span class="mi-label">Back to Home</span>
+            </button>
             <button class="menu-item" id="btn-help" role="menuitem">
               <span class="mi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
               <span class="mi-label">How to Play</span>
@@ -246,6 +252,19 @@
       <div class="modal-btns">
         <button class="modal-cancel" id="cf-cancel">Cancel</button>
         <button class="modal-ok" id="cf-ok">New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAVE TO HOME CONFIRM (speed bump) -->
+  <div id="homeConfirm" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon">⚠️</div>
+      <h3>Leave the game?</h3>
+      <p>Your current game will be cancelled. All chips and progress will be lost.</p>
+      <div class="modal-btns">
+        <button class="modal-cancel" id="hc-cancel">Keep Playing</button>
+        <button class="modal-ok" id="hc-ok">Leave Game</button>
       </div>
     </div>
   </div>

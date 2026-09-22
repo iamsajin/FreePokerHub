@@ -862,6 +862,11 @@ $('btn-logout').onclick=()=>{ $('confirm').classList.add('show'); };
 $('cf-cancel').onclick=()=>{ $('confirm').classList.remove('show'); };
 $('cf-ok').onclick=()=>{ location.reload(); };
 $('confirm').addEventListener('click',e=>{ if(e.target===$('confirm')) $('confirm').classList.remove('show'); });
+// Back to Home — always speed-bumps because leaving cancels the in-progress game
+$('btn-home').onclick=()=>{ closeMenu(); $('homeConfirm').classList.add('show'); };
+$('hc-cancel').onclick=()=>{ $('homeConfirm').classList.remove('show'); };
+$('hc-ok').onclick=()=>{ location.reload(); };
+$('homeConfirm').addEventListener('click',e=>{ if(e.target===$('homeConfirm')) $('homeConfirm').classList.remove('show'); });
 $('btn-newhand').onclick=()=>{ Sound.resume(); if(G && G.handOver){ startHand(); } };
 
 // sound toggle (swaps between speaker-on and muted white vector icons)
