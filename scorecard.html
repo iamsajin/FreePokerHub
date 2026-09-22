@@ -54,6 +54,12 @@
       <a class="sc-back" href="index.html">&larr; Back</a>
     </div>
 
+    <div class="sc-card" id="group-load-card" hidden>
+      <h2>Your Groups</h2>
+      <p class="sub">Pick a saved group to add its players.</p>
+      <div class="player-list" id="group-load-list"></div>
+    </div>
+
     <div class="sc-card">
       <h2>Coin Value</h2>
       <p class="sub">Set what your chips are worth. Everything is calculated from this.</p>
@@ -168,6 +174,16 @@
       <h2>Who Pays Whom</h2>
       <p class="sub">The simplest way to settle up.</p>
       <div class="settle-list" id="settle-list"></div>
+    </div>
+
+    <div class="sc-card" id="group-save-card" hidden>
+      <h2>Save as Group</h2>
+      <p class="sub">Keep these players together so you can reuse them next time you sign in.</p>
+      <div class="group-save-row">
+        <input class="sc-input" id="group-name" type="text" placeholder="e.g. Friday Night Crew" maxlength="30" autocomplete="off">
+        <button class="btn-primary" id="btn-save-group">Save Group</button>
+      </div>
+      <div class="group-save-msg" id="group-save-msg"></div>
     </div>
 
     <div class="sc-actions">

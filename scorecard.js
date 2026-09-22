@@ -9,6 +9,7 @@
   var STORE_KEY = "fph_scorecard_v1";
   var state = {
     signedIn: false,
+    authProvider: null,   // 'google' | 'apple' | null (guest)
     rateCoins: 100,     // coin count that ...
     rateValue: 5,       // ... equals this dollar value
     players: [],        // {id, first, last, buyins:[{coins,value}], finalCoins}
@@ -89,6 +90,21 @@
     return false;
   }
 
+  /* ---------------- groups (Google sign-in only) ---------------- */
+  var GROUPS_KEY = "fph_scorecard_groups_v1";
+  function isGoogle() { return state.authProvider === "google"; }
+  function loadGroups() {
+    try { var raw = localStorage.getItem(GROUPS_KEY); var a = raw ? JSON.parse(raw) : []; return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+  function saveGroups(arr) { try { localStorage.setItem(GROUPS_KEY, JSON.stringify(arr)); } catch (e) {} }
+  function groupNewId() { return "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function groupInitials(name) {
+    var parts = String(name || "").trim().split(/\s+/);
+    var s = ((parts[0] || "?").charAt(0) + ((parts[1] || "").charAt(0))).toUpperCase();
+    return s || "G";
+  }
+
   /* ---------------- screen routing ---------------- */
   function show(phase) {
     state.phase = phase;
@@ -115,6 +131,7 @@
   }
   function signIn(provider) {
     state.signedIn = true;
+    state.authProvider = provider ? provider.toLowerCase() : null;
     save();
     if (provider) toast("Signed in with " + provider);
     // if a game is already in progress, resume it
@@ -189,6 +206,63 @@
       });
     }
     $("btn-start").disabled = state.players.length < 2;
+    renderGroupPicker();
+  }
+
+  /* pick a saved group on the setup screen */
+  function renderGroupPicker() {
+    var card = $("group-load-card");
+    if (!card) return;
+    var groups = isGoogle() ? loadGroups() : [];
+    if (!groups.length) { card.hidden = true; return; }
+    card.hidden = false;
+    var list = $("group-load-list");
+    list.innerHTML = "";
+    groups.slice().reverse().forEach(function (g) {
+      var row = el("div", "plr");
+      row.innerHTML =
+        '<div class="plr-avatar">' + esc(groupInitials(g.name)) + '</div>' +
+        '<div class="plr-main">' +
+          '<div class="plr-name">' + esc(g.name) + '</div>' +
+          '<div class="plr-meta"><b>' + g.players.length + '</b> player' + (g.players.length === 1 ? '' : 's') + '</div>' +
+        '</div>';
+      var actions = el("div", "plr-actions");
+      var loadBtn = el("button", "btn-load", "Load");
+      loadBtn.onclick = function () { applyGroup(g); };
+      var x = el("button", "btn-x", "&times;");
+      x.title = "Delete group";
+      x.onclick = function () { deleteGroup(g.id); };
+      actions.appendChild(loadBtn);
+      actions.appendChild(x);
+      row.appendChild(actions);
+      list.appendChild(row);
+    });
+  }
+  function applyGroup(g) {
+    var added = 0;
+    (g.players || []).forEach(function (gp) {
+      var dupe = state.players.some(function (p) {
+        return (p.first || "").toLowerCase() === (gp.first || "").toLowerCase() &&
+               (p.last || "").toLowerCase() === (gp.last || "").toLowerCase();
+      });
+      if (!dupe) {
+        state.players.push({
+          id: state.nextId++, first: gp.first, last: gp.last || "",
+          buyins: [{ coins: state.rateCoins, value: coinsToValue(state.rateCoins) }],
+          finalCoins: null
+        });
+        added++;
+      }
+    });
+    renderSetup();
+    save();
+    toast(added ? ("Added " + added + " player" + (added === 1 ? "" : "s") + ' from \u201c' + g.name + '\u201d')
+                : "Those players are already added");
+  }
+  function deleteGroup(id) {
+    saveGroups(loadGroups().filter(function (g) { return g.id !== id; }));
+    renderGroupPicker();
+    toast("Group deleted");
   }
   function removePlayer(id) {
     state.players = state.players.filter(function (p) { return p.id !== id; });
@@ -444,7 +518,34 @@
         sl.appendChild(row);
       });
     }
+    renderGroupSave();
     save();
+  }
+
+  /* save the current roster as a named group (Google sign-in only) */
+  function renderGroupSave() {
+    var card = $("group-save-card");
+    if (!card) return;
+    if (!isGoogle() || !state.players.length) { card.hidden = true; return; }
+    card.hidden = false;
+    $("group-save-msg").textContent = "";
+  }
+  function saveCurrentGroup() {
+    var name = $("group-name").value.trim();
+    if (!name) { toast("Name your group first"); $("group-name").focus(); return; }
+    var players = state.players.map(function (p) { return { first: p.first, last: p.last || "" }; });
+    var groups = loadGroups();
+    var existing = null;
+    for (var i = 0; i < groups.length; i++) {
+      if (groups[i].name.toLowerCase() === name.toLowerCase()) { existing = groups[i]; break; }
+    }
+    if (existing) { existing.name = name; existing.players = players; existing.updatedAt = Date.now(); }
+    else { groups.push({ id: groupNewId(), name: name, players: players, createdAt: Date.now() }); }
+    saveGroups(groups);
+    $("group-save-msg").innerHTML =
+      '&#10003; Saved \u201c' + esc(name) + '\u201d with ' + players.length +
+      ' players \u2014 pick it next time you sign in.';
+    toast(existing ? "Group updated" : "Group saved");
   }
 
   /* ================================================================
@@ -516,11 +617,13 @@
     // results
     $("btn-res-edit").onclick = function () { show("end"); };
     $("btn-back-game").onclick = function () { show("game"); };
+    $("btn-save-group").onclick = saveCurrentGroup;
+    $("group-name").addEventListener("keydown", function (e) { if (e.key === "Enter") saveCurrentGroup(); });
     $("btn-newgame").onclick = function () {
       openConfirm("Start a new game?", "This clears all players, buy-ins and results.", function () {
-        var signed = state.signedIn;
+        var signed = state.signedIn, prov = state.authProvider;
         state = {
-          signedIn: signed, rateCoins: 100, rateValue: 5,
+          signedIn: signed, authProvider: prov, rateCoins: 100, rateValue: 5,
           players: [], nextId: 1, phase: "setup"
         };
         $("denom-coins").value = 100;
