@@ -430,7 +430,7 @@ body.is-ios #sc-apple-btn { display: flex; }
 
     <div class="sc-card">
       <h2>Add Players</h2>
-      <p class="sub">First name required. Assign each player a starting buy-in.</p>
+      <p class="sub">First name required. Each player starts with one standard buy-in.</p>
       <div class="name-row">
         <div class="sc-field">
           <label>First name</label>
@@ -439,19 +439,6 @@ body.is-ios #sc-apple-btn { display: flex; }
         <div class="sc-field">
           <label>Last name <span style="color:#6f8a7c">(optional)</span></label>
           <input class="sc-input" id="p-last" type="text" placeholder="e.g. Chen" maxlength="20">
-        </div>
-      </div>
-      <div class="assign-row">
-        <div class="sc-field">
-          <label>Buy-in coins</label>
-          <input class="sc-input" id="p-coins" type="number" inputmode="numeric" min="0" value="100">
-        </div>
-        <div class="sc-field">
-          <label>Buy-in value</label>
-          <div class="adorn has-pre">
-            <span class="pre">$</span>
-            <input class="sc-input" id="p-value" type="number" inputmode="decimal" min="0" step="0.01" value="5">
-          </div>
         </div>
       </div>
       <button class="btn-add" id="btn-add-player">+ Add Player</button>

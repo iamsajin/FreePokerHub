@@ -141,23 +141,11 @@
       "<b>" + (+state.rateCoins).toLocaleString() + "</b> coins = <b>" + fmt(state.rateValue) +
       "</b> &nbsp;·&nbsp; each coin is worth <b>" + fmt(dpc) + "</b>";
   }
-  // keep the "buy-in value" field in sync when coins typed (and vice-versa)
-  function syncAssignFromCoins() {
-    var c = parseFloat($("p-coins").value);
-    if (!isNaN(c)) $("p-value").value = coinsToValue(c).toFixed(2);
-  }
-  function syncAssignFromValue() {
-    var v = parseFloat($("p-value").value);
-    var dpc = dollarsPerCoin();
-    if (!isNaN(v) && dpc > 0) $("p-coins").value = Math.round(v / dpc);
-  }
-
   function addPlayer() {
     var first = $("p-first").value.trim();
     var last = $("p-last").value.trim();
     if (!first) { toast("Enter a first name"); $("p-first").focus(); return; }
-    var coins = parseFloat($("p-coins").value);
-    if (isNaN(coins) || coins < 0) coins = state.rateCoins;
+    var coins = state.rateCoins; // one standard buy-in
 
     state.players.push({
       id: state.nextId++,
@@ -166,11 +154,9 @@
       buyins: [{ coins: coins, value: coinsToValue(coins) }],
       finalCoins: null
     });
-    // reset name fields, keep the assign defaults
+    // reset name fields
     $("p-first").value = "";
     $("p-last").value = "";
-    $("p-coins").value = state.rateCoins;
-    $("p-value").value = (+state.rateValue).toFixed(2);
     $("p-first").focus();
     renderSetup();
     save();
@@ -491,9 +477,6 @@
     // setup — denomination
     $("denom-coins").addEventListener("input", function () { readDenom(); });
     $("denom-value").addEventListener("input", function () { readDenom(); });
-    // setup — assign sync
-    $("p-coins").addEventListener("input", syncAssignFromCoins);
-    $("p-value").addEventListener("input", syncAssignFromValue);
     $("btn-add-player").onclick = addPlayer;
     $("p-last").addEventListener("keydown", function (e) { if (e.key === "Enter") addPlayer(); });
     $("btn-start").onclick = function () {
@@ -543,8 +526,6 @@
         };
         $("denom-coins").value = 100;
         $("denom-value").value = 5;
-        $("p-coins").value = 100;
-        $("p-value").value = "5.00";
         save();
         show("setup");
         toast("New game started");
@@ -567,8 +548,6 @@
     // restore denomination fields if we loaded a game
     $("denom-coins").value = state.rateCoins;
     $("denom-value").value = state.rateValue;
-    $("p-coins").value = state.rateCoins;
-    $("p-value").value = (+state.rateValue).toFixed(2);
 
     // decide starting screen
     if (state.signedIn && state.players.length) {

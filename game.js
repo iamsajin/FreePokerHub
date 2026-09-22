@@ -753,17 +753,51 @@ function exitFullscreen(){
   if(isFullscreen() && fn){ try{ fn.call(document); }catch(e){} }
 }
 function toggleFullscreen(){ isFullscreen() ? exitFullscreen() : enterFullscreen(); }
-/* On mobile, go fullscreen (hides the browser title/URL bar) on the user's
-   first tap anywhere — the earliest moment a browser permits it. */
-if(isTouchDevice){
-  const kickFullscreen = ()=>{
-    if(!isFullscreen()) enterFullscreen();
-    document.removeEventListener('pointerdown', kickFullscreen);
-    document.removeEventListener('touchend', kickFullscreen);
-  };
-  document.addEventListener('pointerdown', kickFullscreen);
-  document.addEventListener('touchend', kickFullscreen);
+/* ---------- ORIENTATION GATE (app-like: portrait landing, landscape play) ----------
+   The site lands in portrait. Play is only allowed in landscape; tapping Play in
+   portrait shows the "Rotate your device" screen. On landscape we go fullscreen so
+   the browser tabs/URL bar disappear and it feels like a native app. */
+function isPortrait(){ return window.matchMedia('(orientation: portrait)').matches; }
+let gameStarted = false;
+let pendingName = null;
+
+function showRotateNotice(on){
+  const n = document.getElementById('rotate-notice');
+  if(n) n.classList.toggle('show', !!on);
 }
+/* Browsers only allow fullscreen from a user gesture. After a rotate we arm the
+   next tap to trigger it. */
+function armFullscreenOnTap(){
+  const kick = ()=>{
+    if(!isFullscreen()) enterFullscreen();
+    document.removeEventListener('pointerdown', kick, true);
+    document.removeEventListener('touchend', kick, true);
+  };
+  document.addEventListener('pointerdown', kick, true);
+  document.addEventListener('touchend', kick, true);
+}
+function startGameNow(){
+  if(gameStarted) return;
+  gameStarted = true;
+  showRotateNotice(false);
+  try { document.dispatchEvent(new Event('fph:gamestart')); } catch(e){}
+  doLogin(pendingName || (($('in-name').value||'').trim()) || 'Player');
+}
+function handleOrientation(){
+  if(!isTouchDevice) return;
+  if(isPortrait()){
+    // Portrait: landing is usable, but an in-progress or pending game must wait.
+    showRotateNotice(gameStarted || !!pendingName);
+  } else {
+    // Landscape: clear the notice, go fullscreen, and start if the user was waiting.
+    showRotateNotice(false);
+    if(pendingName && !gameStarted){ startGameNow(); }
+    if(gameStarted || pendingName){ enterFullscreen(); armFullscreenOnTap(); }
+  }
+}
+window.addEventListener('orientationchange', ()=> setTimeout(handleOrientation, 80));
+window.addEventListener('resize', handleOrientation);
+try { window.matchMedia('(orientation: portrait)').addEventListener('change', handleOrientation); } catch(e){}
 function lockLandscape(){
   try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); }catch(e){}
 }
@@ -794,7 +828,6 @@ function doLogin(name){
   $('ua').textContent=(user.name[0]||'P').toUpperCase();
   $('login').style.display='none';
   $('game').style.display='flex';
-  if(isTouchDevice) enterFullscreen();
   initGame();
   updateStatsDisplay();
   setMsg('Welcome, <b>'+user.name+'</b>! ('+DIFFICULTY[difficulty].label+') Click “Deal New Hand” to start.');
@@ -813,7 +846,16 @@ $('btn-signin').onclick=()=>{
   const n=$('in-name').value.trim();
   if(!n){ $('in-name').focus(); $('in-name').style.borderColor='#EA4335'; return; }
   Sound.resume();
-  doLogin(n);
+  pendingName = n;
+  if(isTouchDevice && isPortrait()){
+    // Portrait on a phone/tablet: ask the player to rotate before dealing.
+    showRotateNotice(true);
+    armFullscreenOnTap();
+    return;
+  }
+  // Landscape (or desktop): the click is a valid gesture — go fullscreen and play.
+  if(isTouchDevice) enterFullscreen();
+  startGameNow();
 };
 $('in-name').addEventListener('keydown',e=>{ if(e.key==='Enter') $('btn-signin').click(); });
 $('btn-logout').onclick=()=>{ $('confirm').classList.add('show'); };
@@ -841,3 +883,70 @@ $('resultModal').addEventListener('click',e=>{ if(e.target===$('resultModal')) $
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){ closeMenu(); document.querySelectorAll('.modal-overlay.show').forEach(m=>m.classList.remove('show')); }
 });
+
+
+/* ============================================================
+   ADD TO HOME SCREEN HINT (mobile, first visit, dismissible)
+   - Android/Chrome: native install via beforeinstallprompt
+   - iOS: manual "Share -> Add to Home Screen" instructions
+   ============================================================ */
+(function(){
+  const banner = document.getElementById('a2hs');
+  if(!banner) return;
+  const KEY = 'fph_a2hs_dismissed';
+  const installBtn = document.getElementById('a2hs-install');
+  const closeBtn   = document.getElementById('a2hs-close');
+  const msg        = document.getElementById('a2hs-msg');
+
+  const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                     window.navigator.standalone === true;
+  let dismissed = false;
+  try { dismissed = localStorage.getItem(KEY) === '1'; } catch(e){}
+
+  function hide(remember){
+    banner.classList.remove('show');
+    banner.setAttribute('aria-hidden','true');
+    if(remember){ try { localStorage.setItem(KEY,'1'); } catch(e){} }
+  }
+  function show(){
+    if(!isPortrait() || gameStarted) return;   // landing only
+    banner.setAttribute('aria-hidden','false');
+    banner.classList.add('show');
+  }
+
+  // Only pester real mobile devices that haven't installed or dismissed.
+  if(!isTouchDevice || standalone || dismissed) return;
+
+  closeBtn.onclick = () => hide(true);
+  document.addEventListener('fph:gamestart', () => hide(false));
+  document.addEventListener('fullscreenchange', () => { if(isFullscreen()) hide(false); });
+
+  const ua  = navigator.userAgent || '';
+  const iOS = /iPad|iPhone|iPod/.test(ua) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  // Android / Chromium: capture the native prompt.
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    const deferred = e;
+    installBtn.style.display = '';
+    installBtn.onclick = async () => {
+      hide(true);
+      try { deferred.prompt(); await deferred.userChoice; } catch(err){}
+    };
+    setTimeout(show, 1200);
+  });
+  window.addEventListener('appinstalled', () => hide(true));
+
+  // iOS never fires beforeinstallprompt — show manual steps.
+  if(iOS){
+    banner.classList.add('ios-hint');
+    msg.innerHTML =
+      'Tap <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#f0d878" ' +
+      'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M12 3v13"/><path d="M8 7l4-4 4 4"/>' +
+      '<path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></svg> Share, then ' +
+      '<b style="color:#cfe6d8">Add to Home Screen</b>.';
+    setTimeout(show, 1400);
+  }
+})();
