@@ -1617,3 +1617,27 @@ body {
     font-size: 13px;
   }
 }
+
+/* ---------------- SCORE CARD LINK (login) ---------------- */
+.scorecard-link {
+  display: block;
+  margin: 14px auto 0;
+  padding: 11px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, .55);
+  background: rgba(0, 0, 0, .22);
+  color: var(--gold2);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-decoration: none;
+  text-align: center;
+  transition: .15s;
+}
+
+.scorecard-link:hover {
+  background: rgba(212, 175, 55, .16);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
