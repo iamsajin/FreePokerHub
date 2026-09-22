@@ -1399,8 +1399,6 @@ body {
 
 /* ================= PORTRAIT (default landing) ================= */
 @media (orientation: portrait) {
-  /* Hide the poker hand-rankings image on the landing card in portrait. */
-  .login-visual { display: none; }
   .login-card { width: 420px; max-width: 92vw; }
 }
 
@@ -2160,3 +2158,38 @@ body.is-ios #sc-apple-btn { display: flex; }
 }
 @media (max-width: 560px) { .scorecard-cta { width: 380px; } }
 @media (orientation: portrait) { .scorecard-cta { width: 420px; max-width: 92vw; } }
+
+/* ---------------- LANDING — LANDSCAPE ONLY: 2-COLUMN (8 / 4) ---------------- */
+@media (orientation: landscape) {
+  #login {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    padding: 24px;
+  }
+  .login-card {                              /* left column = 8/12 */
+    flex: 2 1 0;
+    width: auto;
+    max-width: 640px;
+  }
+  .scorecard-container {                     /* right column = 4/12 */
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 320px;
+  }
+  .login-content {
+    padding: 16px 16px;
+  }
+  .scorecard-container .scorecard-cta {
+    width: auto;
+    max-width: none;
+    text-align: center;
+    padding: 16px 16px;
+  }
+}
+
+/* Landing image: desktop only — shown in the browser, hidden on touch (responsive) devices */
+@media (hover: none) and (pointer: coarse) {
+  .login-visual { display: none; }
+}
